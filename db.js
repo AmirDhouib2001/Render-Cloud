@@ -1,8 +1,9 @@
-const { Sequelize } = require('sequelize')
+const { Sequelize } = require('sequelize');
+require('dotenv').config(); // Charger les variables d'environnement
 
-// Database
+// Base de données
 const sequelize = new Sequelize(
-  '', // TODO: database connection string
+  process.env.DATABASE_URL, // URL de connexion à la base de données
   {
     dialect: 'postgres',
     dialectOptions: {
@@ -10,15 +11,18 @@ const sequelize = new Sequelize(
         require: true,
         rejectUnauthorized: false,
       },
-    },
+    },  
     define: {
       createdAt: 'added',
       updatedAt: 'updated',
-    }
+    },
   },
-)
+);
 
 sequelize.authenticate()
-sequelize.sync()
+  .then(() => console.log('Connexion réussie à la base de données.'))
+  .catch(err => console.error('Erreur de connexion :', err));
 
-module.exports = sequelize
+sequelize.sync();
+
+module.exports = sequelize;
